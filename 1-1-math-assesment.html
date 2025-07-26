@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Mark Sheet Ranking</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to the top */
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        p {
+            font-size: 0.95em;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eaf1f8;
+            color: #34495e;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #e6f7ff;
+            cursor: default;
+        }
+
+        td:last-child {
+            text-align: center;
+        }
+
+        .needed-box {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #d1ecf1; /* Light blue */
+            border: 1px solid #bee5eb;
+            border-radius: 4px;
+            color: #0c5460;
+            font-weight: bold;
+            white-space: nowrap; /* Prevent line breaks */
+        }
+
+        .needed-box.impossible {
+            background-color: #f8d7da; /* Light red */
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        /* Responsive table behavior */
+        @media screen and (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+                border-radius: 8px;
+            }
+            td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+            }
+            /* Labeling the data cells */
+            td:nth-of-type(1):before { content: "Name"; }
+            td:nth-of-type(2):before { content: "Total"; }
+            td:nth-of-type(3):before { content: "Grade"; }
+            td:nth-of-type(4):before { content: "Needed for A+ (80)"; }
+            td:last-child { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Mark Sheet Ranking</h1>
+        <p>Ranked by total marks (out of 100). "Marks Needed for A+ (80)" indicates the score required in the Final Exam (max 40) to reach a total of 80.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Total</th>
+                    <th>Grade</th>
+                    <th>Marks Needed for A+ (80)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Md. Jubayer Rhaman Sakib</td>
+                    <td>53</td>
+                    <td>C+</td>
+                    <td><span class="needed-box">27</span></td>
+                </tr>
+                <tr>
+                    <td>Mst. Nadia Khanom Mukta</td>
+                    <td>51</td>
+                    <td>C+</td>
+                    <td><span class="needed-box">30</span></td>
+                </tr>
+                <tr>
+                    <td>Jahirul Islam Emon</td>
+                    <td>47</td>
+                    <td>C</td>
+                    <td><span class="needed-box">34</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Omor Faruk</td>
+                    <td>46</td>
+                    <td>C</td>
+                    <td><span class="needed-box">34</span></td>
+                </tr>
+                <tr>
+                    <td>Al-Amin Islam</td>
+                    <td>45</td>
+                    <td>C</td>
+                    <td><span class="needed-box">35</span></td>
+                </tr>
+                <tr>
+                    <td>Saliwa Muktadir Lamia</td>
+                    <td>44</td>
+                    <td>D</td>
+                    <td><span class="needed-box">36</span></td>
+                </tr>
+                <tr>
+                    <td>Mohammedahnaf Siddique Siam</td>
+                    <td>31</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Julfikar Ahamed Jion</td>
+                    <td>31</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Roza Sharif Shanto</td>
+                    <td>30</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Sakbawat Islam Pithul</td>
+                    <td>30</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Shamsuzzuha Sizan</td>
+                    <td>28</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Aklima Akter</td>
+                    <td>27</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Dipte Rani Sheel</td>
+                    <td>25</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Hindoy Ahamed</td>
+                    <td>21</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Sazzad Mahmud Abir</td>
+                    <td>12</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Isa Almahani</td>
+                    <td>0</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Nazneen Sultana</td>
+                    <td>0</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Evrahim Hossain Jashan</td>
+                    <td>0</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+                <tr>
+                    <td>Md. Bayzid</td>
+                    <td>0</td>
+                    <td>F</td>
+                    <td><span class="needed-box impossible">Impossible (needs > 40)</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
