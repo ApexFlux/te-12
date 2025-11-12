@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>International Standard University — Textile (Batch 12) CG Calculator</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #fff8fb;
+      --card: #fff2f6;
+      --accent: #ff9fc4;        /* pastel pink */
+      --accent-2: #d9c7f1;      /* soft lavender */
+      --muted: #7a5a73;
+      --text: #3b2b33;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: rgba(197, 122, 158, 0.18);
+      --radius: 14px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: linear-gradient(180deg, #fffafc 0%, #fff3f9 100%);
+      color:var(--text);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:36px 20px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:1000px;
+    }
+
+    header{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-bottom:18px;
+      text-align:left;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:56px;
+      height:56px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius:12px;
+      display:inline-grid;
+      place-items:center;
+      box-shadow:0 8px 24px var(--shadow);
+      font-size:20px;
+    }
+
+    h1{
+      margin:0;
+      font-family: 'Playfair Display', serif;
+      font-weight:700;
+      font-size:20px;
+      color:var(--accent);
+      letter-spacing:0.2px;
+    }
+
+    h2{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,242,247,0.9));
+      border-radius: var(--radius);
+      padding:20px;
+      box-shadow: 0 10px 30px rgba(217, 193, 208, 0.12);
+      border: 1px solid rgba(255, 182, 203, 0.18);
+    }
+
+    .table-wrap{
+      overflow:auto;
+      margin-top:8px;
+      border-radius:10px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:760px;
+    }
+
+    thead th{
+      background: linear-gradient(180deg, #fff6fb, #fff1f6);
+      position: sticky;
+      top:0;
+      z-index:1;
+      color:var(--muted);
+      font-weight:600;
+      font-size:13px;
+      padding:12px 10px;
+      text-align:left;
+      border-bottom: 1px solid rgba(255,182,193,0.25);
+    }
+
+    tbody td{
+      padding:12px 10px;
+      border-bottom:1px dashed rgba(255,182,193,0.12);
+      vertical-align:middle;
+      font-size:13px;
+    }
+
+    tbody td small{display:block;color:var(--muted);font-size:12px;margin-top:6px}
+
+    input[type="number"], select{
+      width:100%;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid rgba(120,80,100,0.08);
+      font-size:13px;
+      background:#fff;
+      color:var(--text);
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+      align-items:flex-start;
+    }
+
+    .stats{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .stat{
+      min-width:150px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,245,249,0.95));
+      border-radius:12px;
+      padding:12px;
+      border: 1px solid rgba(217,193,208,0.18);
+      box-shadow: 0 6px 18px rgba(217,193,208,0.06);
+      text-align:center;
+    }
+
+    .stat h3{margin:0;font-size:18px;color:var(--accent)}
+    .stat p{margin:6px 0 0;font-size:12px;color:var(--muted)}
+
+    .controls{display:flex;gap:10px;align-items:center}
+    button{
+      border:0;
+      background:linear-gradient(180deg,var(--accent), #ff7aa8);
+      color:white;
+      padding:9px 14px;
+      border-radius:10px;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 6px 18px rgba(255,127,168,0.18);
+      transition:transform .14s ease, box-shadow .14s ease;
+    }
+    button.secondary{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid rgba(255,127,168,0.15);
+      box-shadow:none;
+      font-weight:600;
+    }
+    button:active{ transform: translateY(1px) }
+
+    .tip{ font-size:13px;color:var(--muted);text-align:right;max-width:320px }
+
+    footer{ margin-top:12px;color:var(--muted);font-size:13px;text-align:center; }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:linear-gradient(180deg, rgba(10,8,10,0.35), rgba(10,8,10,0.45));
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:60;
+      padding:20px;
+    }
+    .modal{
+      width:100%;
+      max-width:520px;
+      background:linear-gradient(180deg,#fff,#fffafc);
+      border-radius:14px;
+      padding:20px;
+      box-shadow:0 18px 60px rgba(50,20,40,0.35);
+      transform: translateY(18px) scale(.98);
+      opacity:0;
+      transition: all .28s cubic-bezier(.2,.9,.2,1);
+      border:1px solid rgba(255,182,193,0.18);
+    }
+    .modal.show{ transform: translateY(0) scale(1); opacity:1 }
+    .modal-head{ display:flex;align-items:center;justify-content:space-between; gap:10px; }
+    .modal h3{ margin:0; color:var(--accent); font-family:'Playfair Display', serif; }
+    .modal .close{ background:transparent;border:0;font-size:20px;cursor:pointer;color:var(--muted) }
+
+    .result-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:16px; }
+    .result-card{ background:linear-gradient(180deg,#fff,#fffaf7); padding:12px; border-radius:10px; border:1px solid rgba(217,193,208,0.12); text-align:center }
+    .result-card strong{ display:block; font-size:20px; color:var(--accent); }
+    .result-card span{ display:block; font-size:12px; color:var(--muted); margin-top:6px }
+
+    .modal .note{ margin-top:12px; font-size:13px; color:var(--muted); text-align:center }
+
+    /* small */
+    @media (max-width:820px){
+      table{ min-width:720px }
+    }
+    @media (max-width:720px){
+      thead th:nth-child(2), tbody td:nth-child(2) { display:none }
+      .result-grid{ grid-template-columns: 1fr; }
+      .brand { gap:10px }
+      .logo { width:48px; height:48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden>🌸</div>
+        <div>
+          <h1>International Standard University</h1>
+          <h2>Textile Engineering Department — Batch 12</h2>
+        </div>
+      </div>
+      <div class="sub">1st Year, 2nd Semester (L1T2) — CG (Semester GPA) Calculator</div>
+    </header>
+
+    <div class="card" role="region" aria-label="cg calculator">
+      <div class="table-wrap">
+        <table id="courseTable" aria-label="courses table">
+          <thead>
+            <tr>
+              <th>Course Code</th>
+              <th>Course Title</th>
+              <th>Credits</th>
+              <th>Marks (%)</th>
+              <th>Letter Grade</th>
+              <th>Grade Point</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row">
+        <div style="flex:1; min-width:220px;">
+          <div class="stats">
+            <div class="stat">
+              <h3 id="totalCredits">0.00</h3>
+              <p>Total Credits</p>
+            </div>
+            <div class="stat">
+              <h3 id="totalGradePoints">0.00</h3>
+              <p>Total Grade Points</p>
+            </div>
+            <div class="stat">
+              <h3 id="cgpa">0.00</h3>
+              <p>Semester CGPA</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="min-width:240px; display:flex; flex-direction:column; gap:8px; align-items:flex-end">
+          <div class="controls">
+            <button id="calcBtn" title="Calculate CGPA">Calculate ✨</button>
+            <button id="resetBtn" class="secondary" title="Reset fields">Reset</button>
+            <button id="exportCSV" class="secondary" title="Export table as CSV">Export CSV</button>
+          </div>
+          <div class="tip">Tip: Type marks (%) to auto-fill the letter grade — or choose the letter grade directly.</div>
+        </div>
+      </div>
+
+      <footer>
+        <div><strong>Grade scale:</strong> A+ (≥80)=4.00 · A (75–79.99)=3.75 · A– (70–74.99)=3.50 · B+ (65–69.99)=3.25 · B (60–64.99)=3.00 · B– (55–59.99)=2.75 · C+ (50–54.99)=2.50 · C (45–49.99)=2.25 · D (40–44.99)=2.00 · F (&lt;40)=0.00</div>
+        <div style="margin-top:8px; font-size:12px; color:var(--muted)">Designed for Textile Engineering students of International Standard University — Batch 12 🎀</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle">Semester CG Result 🌸</h3>
+        <button class="close" id="modalClose" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="result-grid" id="resultGrid">
+        <div class="result-card">
+          <strong id="resCGPA">0.00</strong>
+          <span>Semester CGPA</span>
+        </div>
+        <div class="result-card">
+          <strong id="resTotalCredits">0.00</strong>
+          <span>Total Credits</span>
+        </div>
+        <div class="result-card">
+          <strong id="resTotalGP">0.00</strong>
+          <span>Total Grade Points</span>
+        </div>
+        <div class="result-card">
+          <strong id="resClassification">—</strong>
+          <span>Overall Classification</span>
+        </div>
+      </div>
+
+      <div class="note">You can edit marks or grades, then press Calculate again. This file works fully offline in your browser — perfect for GitHub Pages.</div>
+    </div>
+  </div>
+
+<script>
+/* Course data from your table */
+const courses = [
+  {code:'MAT 0541 1201', title:'Mathematics-II', credits:3.0},
+  {code:'CHE 0531 1203', title:'Chemistry-II', credits:3.0},
+  {code:'CHE 0531 1204', title:'Chemistry-II Lab', credits:1.0},
+  {code:'PHY 0533 1205', title:'Physics-II', credits:3.0},
+  {code:'PHY 0533 1206', title:'Physics-II Lab', credits:1.0},
+  {code:'CSE 0613 1207', title:'Computer Fundamentals and Programming', credits:3.0},
+  {code:'MAT 0542 1209', title:'Statistics', credits:3.0},
+  {code:'MEC 0732 1212', title:'Engineering Drawing Lab', credits:0.75},
+  {code:'HSS 0300 1213', title:'Bangladesh Studies', credits:2.0}
+];
+
+/* Grade scale */
+const gradeScale = [
+  {letter:'A+', min:80, point:4.00},
+  {letter:'A',  min:75, point:3.75},
+  {letter:'A-', min:70, point:3.50},
+  {letter:'B+', min:65, point:3.25},
+  {letter:'B',  min:60, point:3.00},
+  {letter:'B-', min:55, point:2.75},
+  {letter:'C+', min:50, point:2.50},
+  {letter:'C',  min:45, point:2.25},
+  {letter:'D',  min:40, point:2.00},
+  {letter:'F',  min:0,  point:0.00}
+];
+
+const letterOptions = gradeScale.map(g => g.letter);
+const letterToPoint = {};
+gradeScale.forEach(g => letterToPoint[g.letter] = g.point);
+
+/* build table rows */
+function createTable(){
+  const tbody = document.querySelector('#courseTable tbody');
+  tbody.innerHTML = '';
+  courses.forEach((c, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${c.code}</strong><small>${c.title}</small></td>
+      <td>${c.title}</td>
+      <td>${c.credits.toFixed(2)}</td>
+      <td><input type="number" min="0" max="100" step="0.01" class="marks" data-idx="${idx}" placeholder="e.g. 78.5" aria-label="Marks for ${c.title}"></td>
+      <td>
+        <select class="grade" data-idx="${idx}" aria-label="Grade for ${c.title}">
+          <option value="">-- select --</option>
+          ${letterOptions.map(l => `<option value="${l}">${l}</option>`).join('')}
+        </select>
+      </td>
+      <td class="gp" data-idx="${idx}" aria-live="polite">-</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* convert marks to letter grade */
+function marksToLetter(m){
+  if(m === '' || m === null || isNaN(m)) return '';
+  const mm = parseFloat(m);
+  for(const g of gradeScale){
+    if(mm >= g.min) return g.letter;
+  }
+  return 'F';
+}
+
+/* compute totals and update UI; returns object of results */
+function compute(showModal=false){
+  let totalCredits = 0.0;
+  let totalGradePoints = 0.0;
+
+  const rows = document.querySelectorAll('#courseTable tbody tr');
+  rows.forEach((tr, i) => {
+    const credits = courses[i].credits;
+    totalCredits += credits;
+
+    const marksEl = tr.querySelector('input.marks');
+    const sel = tr.querySelector('select.grade');
+    const gpCell = tr.querySelector('.gp');
+
+    const marksVal = (marksEl && marksEl.value) ? marksEl.value.trim() : '';
+    let letter = sel.value;
+    if(marksVal !== ''){
+      const auto = marksToLetter(marksVal);
+      if(auto) sel.value = auto;
+      letter = sel.value;
+    }
+
+    const gp = (letter && letterToPoint[letter] !== undefined) ? letterToPoint[letter] : NaN;
+    if(!isNaN(gp)){
+      gpCell.textContent = gp.toFixed(2);
+      totalGradePoints += gp * credits;
+    } else {
+      gpCell.textContent = '-';
+    }
+  });
+
+  // compute cgpa
+  const cgpa = totalCredits > 0 ? (totalGradePoints / totalCredits) : 0;
+
+  // update stat cards (round to 2 decimals)
+  document.getElementById('totalCredits').textContent = (Math.round(totalCredits*100)/100).toFixed(2);
+  document.getElementById('totalGradePoints').textContent = (Math.round(totalGradePoints*100)/100).toFixed(2);
+  document.getElementById('cgpa').textContent = cgpa.toFixed(2);
+
+  const result = {
+    totalCredits: (Math.round(totalCredits*100)/100).toFixed(2),
+    totalGradePoints: (Math.round(totalGradePoints*100)/100).toFixed(2),
+    cgpa: cgpa.toFixed(2)
+  };
+
+  if(showModal) openModal(result);
+  return result;
+}
+
+/* classification (simple) */
+function classificationFromCGPA(cg){
+  const g = parseFloat(cg);
+  if(isNaN(g)) return '—';
+  if(g >= 3.75) return 'First Class (Excellent)';
+  if(g >= 3.50) return 'First Class (Very Good)';
+  if(g >= 3.00) return 'Second Class';
+  if(g >= 2.25) return 'Third Class';
+  return 'Fail / Needs Improvement';
+}
+
+/* reset */
+function resetAll(){
+  document.querySelectorAll('input.marks').forEach(i => i.value = '');
+  document.querySelectorAll('select.grade').forEach(s => s.value = '');
+  document.querySelectorAll('.gp').forEach(c => c.textContent = '-');
+  compute(false);
+}
+
+/* export CSV */
+function exportCSV(){
+  const rows = [['Course Code','Course Title','Credits','Marks','Letter Grade','Grade Point']];
+  document.querySelectorAll('#courseTable tbody tr').forEach((tr,i)=>{
+    const code = courses[i].code;
+    const title = courses[i].title;
+    const credits = courses[i].credits;
+    const marks = tr.querySelector('input.marks').value || '';
+    const letter = tr.querySelector('select.grade').value || '';
+    const gp = tr.querySelector('.gp').textContent || '';
+    rows.push([code,title,credits,marks,letter,gp]);
+  });
+  const csv = rows.map(r => r.map(cell => '"'+String(cell).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'isu-textile-batch12-cg.csv';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+/* Modal controls */
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modal = modalBackdrop.querySelector('.modal');
+function openModal(result){
+  document.getElementById('resCGPA').textContent = result.cgpa;
+  document.getElementById('resTotalCredits').textContent = result.totalCredits;
+  document.getElementById('resTotalGP').textContent = result.totalGradePoints;
+  document.getElementById('resClassification').textContent = classificationFromCGPA(result.cgpa);
+
+  modalBackdrop.style.display = 'flex';
+  // slight delay to allow CSS transition
+  requestAnimationFrame(()=> modal.classList.add('show'));
+  modalBackdrop.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  modal.classList.remove('show');
+  setTimeout(()=> {
+    modalBackdrop.style.display = 'none';
+    modalBackdrop.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }, 260);
+}
+
+/* events */
+createTable();
+compute(false);
+
+document.getElementById('calcBtn').addEventListener('click', ()=> compute(true));
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('exportCSV').addEventListener('click', exportCSV);
+
+document.addEventListener('input', (e)=>{
+  if(e.target.matches('input.marks')){
+    const tr = e.target.closest('tr');
+    const sel = tr.querySelector('select.grade');
+    const marksVal = e.target.value.trim();
+    if(marksVal !== '') sel.value = marksToLetter(marksVal);
+    compute(false);
+  }
+});
+document.addEventListener('change', (e)=>{ if(e.target.matches('select.grade')) compute(false); });
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', (ev)=>{
+  if(ev.target === modalBackdrop) closeModal();
+});
+document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
