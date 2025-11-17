@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Day</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 3. Apply custom fonts */
+        body {
+            font-family: 'Lora', serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            
+            /* --- NEW: Subtle dot pattern background --- */
+            background-color: #fdf2f8; /* A light rose fallback */
+            background-image: radial-gradient(circle at 1px 1px, rgba(236, 72, 153, 0.2) 1px, transparent 0);
+            background-size: 25px 25px;
+        }
+        .font-cursive {
+            font-family: 'Dancing Script', cursive;
+        }
+        /* 4. Page transition animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out forwards;
+        }
+        
+        /* --- NEW: 5. Falling Items Animation --- */
+        #falling-items-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            pointer-events: none; /* Lets clicks pass through */
+            z-index: 10;
+        }
+        .fall-item {
+            position: absolute;
+            top: -10%;
+            font-size: 1.2rem;
+            color: #f472b6; /* rose-400 */
+            animation: fall linear infinite;
+        }
+        .fall-item.sparkle {
+            color: #fcd34d; /* amber-300 */
+            font-size: 0.8rem;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-rose-100 min-h-screen flex items-center justify-center p-4">
+
+    <div id="waiting-screen" class="text-center p-6 sm:p-8 bg-white/70 backdrop-blur-md rounded-2xl shadow-xl max-w-lg w-full hidden">
+        <svg class="w-16 h-16 text-rose-400 mx-auto animate-pulse" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+        
+        <h1 class="font-cursive text-5xl text-rose-600 mt-6">Counting down to you...</h1>
+        
+        <div id="countdown-timer" class="flex justify-center gap-2 sm:gap-4 my-8">
+            <div class="flex flex-col items-center justify-center bg-rose-50 p-3 sm:p-4 rounded-xl shadow-inner w-20 sm:w-24">
+                <span id="countdown-days" class="text-4xl sm:text-5xl font-bold text-rose-500">0</span>
+                <span class="text-xs text-rose-700 uppercase tracking-wider">Days</span>
+            </div>
+            <div class="flex flex-col items-center justify-center bg-rose-50 p-3 sm:p-4 rounded-xl shadow-inner w-20 sm:w-24">
+                <span id="countdown-hours" class="text-4xl sm:text-5xl font-bold text-rose-500">0</span>
+                <span class="text-xs text-rose-700 uppercase tracking-wider">Hours</span>
+            </div>
+            <div class="flex flex-col items-center justify-center bg-rose-50 p-3 sm:p-4 rounded-xl shadow-inner w-20 sm:w-24">
+                <span id="countdown-minutes" class="text-4xl sm:text-5xl font-bold text-rose-500">0</span>
+                <span class="text-xs text-rose-700 uppercase tracking-wider">Minutes</span>
+            </div>
+            <div class="flex flex-col items-center justify-center bg-rose-50 p-3 sm:p-4 rounded-xl shadow-inner w-20 sm:w-24">
+                <span id="countdown-seconds" class="text-4xl sm:text-5xl font-bold text-rose-500">0</span>
+                <span class="text-xs text-rose-700 uppercase tracking-wider">Seconds</span>
+            </div>
+        </div>
+        
+        <p class="text-gray-700 text-lg mt-4">
+            Something special is waiting for you.
+        </p>
+    </div>
+
+    <div id="birthday-screen" class="relative bg-white/80 backdrop-blur-md rounded-2xl shadow-xl max-w-lg w-full overflow-hidden hidden">
+        
+        <div id="falling-items-container"></div>
+        
+        <svg class="absolute top-3 left-3 w-8 h-8 text-rose-300 opacity-70 z-20" id="decorative-heart-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+        <svg class="absolute bottom-3 right-3 w-8 h-8 text-rose-300 opacity-70 z-20 transform rotate-12" id="decorative-heart-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+        <div class="p-6 bg-gradient-to-r from-rose-400 to-pink-500" id="card-header">
+            <h1 class="font-cursive text-4xl text-white text-center leading-tight">Happy Birthday<br>My Love</h1>
+        </div>
+
+        <div class="p-6 md:p-8 relative min-h-[300px]" id="card-content">
+            
+            <div id="page-1" class="letter-page bg-gradient-to-r from-rose-400 to-pink-500 min-h-[300px] flex flex-col items-center justify-center text-center -m-6 md:-m-8 cursor-pointer group">
+                <h1 class="font-cursive text-5xl md:text-6xl text-white flex flex-col items-center">
+                    <span>Happy Birthday</span>
+                    <span class="mt-2">My Love</span>
+                </h1>
+                <p class="font-sans text-white/90 text-sm mt-12 animate-pulse tracking-wide uppercase group-hover:scale-105 transition-transform">
+                    Click anywhere to begin
+                </p>
+            </div>
+
+            <div id="page-2" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    hey there baby 🥺🥺
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    its your special day, isn't it? 🥺
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed font-bold text-pink-600 mt-2">
+                    HAPPY 20TH BIRTHDAY SWEETHEART 😘😘😘
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed mt-2">
+                    many many happy returns of the day jaan 🥺
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed mt-2">
+                    its your 3rd bday with me!!!😍
+                    and still i love you same as 3years earlier or myb more than that. three year is a really long time, ngl. but not long enough, we have more years to chase our dreams and goals, tai na baby??
+                </p>
+            </div>
+
+            <div id="page-3" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    i still feel amazed, kotto taratari din chole jay. sei almost 4 yr age amar kache notechawa niye knk disila, ar ekhon... ahhemmm 🥺👉👈 nudus 😍😍😍
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    (edit: i mean question🥺)
+                </p>
+            </div>
+
+            <div id="page-4" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    eita alada kore bola lagbe na je how much memory we have created together. its true, amra oto frequently date e jai naa, amader date number and budget duitai ekhon kom, both for our family restrictions and financial status.
+                </p>
+            </div>
+            
+            <div id="page-5" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    ami jano, majhe majhe mone kori about those days jokhon ami tomar kache sad hoye moner dukkho kosto and sad howar kotha share kortam, ovaber bepare share kortam 🫠 and tumi amake asshas dita je ekdin asbe, jokhon ar amar ovab thakbe na and ami tomar thekeo rich hobo. and here i am 🥺
+                </p>
+                 <p class="text-gray-800 text-lg leading-relaxed">
+                    ami ekhoni je onek rich hoye gesi emon naa, but hae ami ager theke onek better condition e achi. so much je, ekhon ami tomar choto khato abdar gula puron korte pari, tomar choto choto happiness er reason hoite pari 🫠💝thank you soo much for standing by my side in my tough days baby 🫠💖💘
+                </p>
+            </div>
+
+            <div id="page-6" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    it is true amader relationship perfect naa, we also fight, maan oviman amadero hoy, but jeituku hoy, eto kom jhogra maybe kono relation ei hoy naa,so i really feel lucky to have you as my partner 🫠💘
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    also maybe ekhon amra ekjon arekjon ke ager moton time dite pari naa, age ekta time chilo jokhon saradin amra s"x kortam, cz amader kotha bolar topic thakto naa, and now amader daily kotha bolar time maybe 30min-1hr in total, which is not bad either, but yeah, ager theke kom time pai as both of us have a busy schedule nowadays.
+                </p>
+                 <p class="text-gray-800 text-lg leading-relaxed">
+                    even in your busiest days, thanks for keeping time for me sweetheart 🫠💝 it really means alot, tottiiee.
+                </p>
+            </div>
+
+            <div id="page-7" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    i was here to write a birthday wish for you, and now i am wrting a bday essay for you 🥺
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    ektu beshi e valobashi tomake, bujhla?? 🥺😘 alamuu 😚
+                </p>
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    i hope that this will the most beautiful bday wish you have ever got 🥺 and i pray, jeno tomar proti bday te ami tomake best vabe wish kore tomake happy korte pari. i love you most!!!
+                </p>
+            </div>
+
+            <div id="page-8" class="letter-page space-y-4 hidden">
+                <p class="text-gray-800 text-lg leading-relaxed">
+                    and yeah, lastly one thing jeita na bollei naa. it is your 3rd bday with me. and i really want this number to grow to as much as possible, jeno tomar 50th bday (jokhon tumi 69yr er buri hoye jaba 🥺😍💖) teo tomake ami ekhoner moton, or ekhoner thekeo beshi valobashte pari, and tomake happiest person in the world korte pari, jeno tmi always feel koro je you have the best husband. best of the best friend, best life partner, best gossip partner, best dustu kaj er partner, best massager, best cuddle buddy, and tomar jonne ami jeno all in one hoite pari and tomar ar amar love jeno ever lasting hoy 🫠💝💖💘
+                </p>
+            </div>
+
+            <div id="page-9" class="letter-page space-y-4 hidden flex flex-col items-center justify-center min-h-[300px] text-center">
+                <p class="font-cursive text-4xl text-rose-600">
+                    I LOVE YOU 🫠💝💖💘
+                </p>
+                <p class="text-xl text-pink-500 font-bold mt-4" style="word-break: break-all;">
+                    I LOVEEEEEEEE YOUUUUUUUUUU SOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO MUUUCCCCCCCCHHHHHHHHHHHHHH 🥺🥺🥺🥺🥺
+                </p>
+                <p class="text-lg text-rose-400 mt-4" style="word-break: break-all;">
+                    MUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH 😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘😙😚😘
+                </p>
+            </div>
+            
+        </div>
+
+        <div id="card-navigation" class="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+            <button id="prev-btn" class="text-white bg-rose-400 hover:bg-rose-500 rounded-full py-2 px-6 shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                Back
+            </button>
+            
+            <div class="text-gray-600 text-sm" id="page-counter">
+                Page <span id="current-page">1</span> of <span id="total-pages">9</span>
+            </div>
+            
+            <button id="next-btn" class="text-white bg-rose-400 hover:bg-rose-500 rounded-full py-2 px-6 shadow-md transition-all duration-300 ease-in-out transform hover:scale-105">
+                Next
+            </button>
+        </div>
+        
+    </div>
+
+    <script>
+        // --- JAVASCRIPT LOGIC ---
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- 1. CONFIGURATION ---
+            
+            // !!!!! IMPORTANT !!!!!
+            // This is where you set your partner's birthday.
+            // FORMAT: 'YYYY-MM-DDTHH:MM:SS' in THEIR local time zone (GMT+6).
+            
+            // --- YOUR PARTNER'S REAL BIRTHDAY (18th November 2025) ---
+            // I have set this to November 18th, 2025, at midnight (GMT+6).
+            // This is now ACTIVE.
+            const unlockDateTime = new Date('2025-11-18T00:00:00+06:00');
+            // --- END OF REAL TIME ---
+
+            
+            // --- FOR TESTING ---
+            // To test the website *before* her birthday, comment out the line above
+            // and UN-comment the line below. This sets the unlock time to
+            // 1 minute in the past, so the letter shows up immediately.
+            
+            // const unlockDateTime = new Date(Date.now() + 6000); 
+            // --- END OF TESTING ---
+            
+            // --- END OF CONFIGURATION ---
+
+
+            // --- 2. GATHER ELEMENTS ---
+            const waitingScreen = document.getElementById('waiting-screen');
+            const birthdayScreen = document.getElementById('birthday-screen');
+
+            // --- NEW: Get countdown elements ---
+            const countdownDays = document.getElementById('countdown-days');
+            const countdownHours = document.getElementById('countdown-hours');
+            const countdownMinutes = document.getElementById('countdown-minutes');
+            const countdownSeconds = document.getElementById('countdown-seconds');
+
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            const currentPageEl = document.getElementById('current-page');
+            const totalPagesEl = document.getElementById('total-pages');
+            const pageCounter = document.getElementById('page-counter');
+            
+            // --- NEW: Get card sections ---
+            const cardHeader = document.getElementById('card-header');
+            const cardContent = document.getElementById('card-content');
+            const heart1 = document.getElementById('decorative-heart-1');
+            const heart2 = document.getElementById('decorative-heart-2');
+            // --- NEW: Get navigation bar ---
+            const cardNavigation = document.getElementById('card-navigation');
+            
+            // Find all elements with the class 'letter-page'
+            const letterPages = document.querySelectorAll('.letter-page');
+            const totalPages = letterPages.length;
+            
+            let currentPage = 1; // We use 1-based indexing for display
+            let previousPage = 0; // Start at 0 to detect initial load
+            
+            // --- 3. TIME-RELEASE LOGIC ---
+            const now = new Date();
+
+            if (now >= unlockDateTime) {
+                // Time to reveal the letter!
+                waitingScreen.classList.add('hidden');
+                birthdayScreen.classList.remove('hidden');
+                startFallingItems(); // <-- Start the animation
+            } else {
+                // It's not time yet.
+                waitingScreen.classList.remove('hidden');
+                birthdayScreen.classList.add('hidden');
+                startCountdown(); // <-- NEW: Start the countdown
+            }
+
+            
+            // --- 4. PAGINATION LOGIC ---
+            
+            // Set initial state
+            // MODIFIED: totalPages is now correctly calculated by the script
+            totalPagesEl.textContent = totalPages;
+            updatePage();
+
+            // --- NEW: Add click listener for Page 1 ---
+            document.getElementById('page-1').addEventListener('click', function() {
+                if (currentPage === 1) {
+                    if (currentPage < totalPages) {
+                        previousPage = currentPage;
+                        currentPage++;
+                        updatePage();
+                    }
+                }
+            });
+
+            // Listen for clicks
+            nextBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    previousPage = currentPage;
+                    currentPage++;
+                    updatePage();
+                }
+            });
+
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    previousPage = currentPage;
+                    currentPage--;
+                    updatePage();
+                }
+            });
+
+            function updatePage() {
+                // Determine direction
+                let direction = 'initial';
+                if (currentPage > previousPage && previousPage !== 0) {
+                    direction = 'next';
+                } else if (currentPage < previousPage) {
+                    direction = 'prev';
+                }
+
+                // Update page counter
+                currentPageEl.textContent = currentPage;
+
+                // --- NEW: Show/Hide elements for splash page ---
+                // Add null checks to prevent errors if elements are missing
+                if (currentPage === 1) {
+                    // We are on the new splash page
+                    if (cardHeader) cardHeader.classList.add('hidden');
+                    if (heart1) heart1.classList.add('hidden');
+                    if (heart2) heart2.classList.add('hidden');
+                    if (pageCounter) pageCounter.style.visibility = 'hidden';
+                    // --- NEW: Hide navigation bar ---
+                    if (cardNavigation) cardNavigation.classList.add('hidden');
+                    // Remove padding from content area to make page 1 fill it
+                    if (cardContent) cardContent.classList.remove('p-6', 'md:p-8');
+                } else {
+                    // We are on a normal letter page
+                    if (cardHeader) cardHeader.classList.remove('hidden');
+                    if (heart1) heart1.classList.remove('hidden');
+                    if (heart2) heart2.classList.remove('hidden');
+                    if (pageCounter) pageCounter.style.visibility = 'visible';
+                    // --- NEW: Show navigation bar ---
+                    if (cardNavigation) cardNavigation.classList.remove('hidden');
+                    // Add padding back
+                    if (cardContent) cardContent.classList.add('p-6', 'md:p-8');
+                }
+
+                // Show/Hide pages
+                letterPages.forEach((page, index) => {
+                    const pageNumber = index + 1;
+                    
+                    // Remove old animation classes
+                    page.classList.remove('slide-in-right', 'slide-in-left', 'fade-in');
+
+                    if (pageNumber === currentPage) {
+                        page.classList.remove('hidden');
+                        
+                        // Add new animation class based on direction
+                        if (direction === 'next') {
+                            page.classList.add('slide-in-right');
+                        } else if (direction === 'prev') {
+                            page.classList.add('slide-in-left');
+                        } else if (direction === 'initial') {
+                            page.classList.add('fade-in');
+                        }
+                        
+                    } else {
+                        page.classList.add('hidden');
+                    }
+                });
+
+                // Show/Hide buttons
+                if (currentPage === 1) {
+                    prevBtn.style.visibility = 'hidden'; // Hide "Back" on first page
+                } else {
+                    prevBtn.style.visibility = 'visible';
+                }
+
+                if (currentPage === totalPages) {
+                    nextBtn.style.visibility = 'hidden'; // Hide "Next" on last page
+                } else {
+                    // --- MODIFIED: Also hide "Next" on Page 1 (nav bar is hidden anyway) ---
+                    nextBtn.style.visibility = (currentPage === 1) ? 'hidden' : 'visible';
+                }
+            }
+            
+            // --- NEW: 5. COUNTDOWN LOGIC ---
+            function startCountdown() {
+                // Add null checks for all countdown elements
+                if (!countdownDays || !countdownHours || !countdownMinutes || !countdownSeconds) {
+                    console.error('Countdown elements not found!');
+                    return;
+                }
+                
+                // Helper function to add leading zero
+                function pad(n) {
+                    return n < 10 ? '0' + n : n;
+                }
+
+                const interval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const distance = unlockDateTime - now;
+
+                    // Calculate time
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Update HTML
+                    countdownDays.innerHTML = pad(days);
+                    countdownHours.innerHTML = pad(hours);
+                    countdownMinutes.innerHTML = pad(minutes);
+                    countdownSeconds.innerHTML = pad(seconds);
+
+                    // When countdown finishes
+                    if (distance < 0) {
+                        clearInterval(interval);
+                        // Hide waiting screen
+                        waitingScreen.classList.add('hidden');
+                        // Show birthday screen
+                        birthdayScreen.classList.remove('hidden');
+                        startFallingItems(); // Start the falling hearts
+                    }
+                }, 1000);
+            }
+            
+            // --- RENAMED: 6. FALLING ITEMS LOGIC --- (was 5)
+            function startFallingItems() {
+                // FIX: Add null check for container
+                const container = document.getElementById('falling-items-container');
+                if (!container) return; // Exit if container not found
+                
+                const items = ['&hearts;', '&#10022;']; // Heart and Sparkle
+                
+                setInterval(() => {
+                    const el = document.createElement('span');
+                    const isSparkle = Math.random() > 0.4; // 40% sparkles
+                    el.innerHTML = isSparkle ? items[1] : items[0];
+                    el.className = 'fall-item' + (isSparkle ? ' sparkle' : '');
+                    
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.animationDuration = (Math.random() * 3 + 5) + 's'; // 5-8 seconds
+                    el.style.opacity = Math.random() * 0.5 + 0.5; // 0.5 - 1.0 opacity
+                    el.style.fontSize = (Math.random() * 0.5 + 0.8) + 'rem'; // 0.8 - 1.3 rem
+                    
+                    container.appendChild(el);
+                    
+                    setTimeout(() => {
+                        el.remove();
+                    }, 8000); // Clean up after 8 seconds
+                    
+                }, 400); // Add a new item every 400ms
+            }
+        });
+    </script>
+
+</body>
+</html>
